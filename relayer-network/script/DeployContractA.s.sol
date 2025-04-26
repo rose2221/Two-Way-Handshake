@@ -9,11 +9,11 @@ contract DeployA is Script {
     function run() external {
         uint256 pk       = vm.envUint("PRIVATE_KEY1");
         address relayer  = vm.envAddress("RELAYER_ADDR");
-        address ctrB     = vm.envAddress("CONTRACT_B_ADDR");
+        address ctrA     = vm.envAddress("CONTRACT_B_ADDR");
 
         vm.startBroadcast(pk);
 
-        ContractA a = new ContractA(ctrB, relayer);
+        ContractA a = new ContractA(ctrA, relayer);
 
         vm.stopBroadcast();
     }

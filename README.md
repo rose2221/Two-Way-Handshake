@@ -81,8 +81,8 @@ this will emit a `syn` event, and the relayer will automatically complete the ha
 
 ## Future Enhancements
 
-### 1. Persistence Layer (Replay Protection)
-Currently, if the relayer restarts, it forgets which sessions it has already handled, which could cause duplicate transactions.
+#### 1. Persistence Layer
+Currently if the relayer restarts it forgets which sessions it has already handled which could cause duplicate transactions.
 
 **Solution:**  
 Integrate a simple LevelDB instance to store:
@@ -91,8 +91,8 @@ Integrate a simple LevelDB instance to store:
 
 ---
 
-### 2. Dockerization & CI Pipeline
-Right now, the relayer requires manual environment setup.
+#### 2. Dockerization & CI Pipeline
+Right now the relayer requires manual environment setup.
 
 **Solution:**  
 - Add a `Dockerfile` and `docker-compose.yaml` to simplify deployment.
@@ -100,7 +100,7 @@ Right now, the relayer requires manual environment setup.
 
 ---
 
-### 3. Transaction Retry with Exponential Backoff
+#### 3. Transaction Retry with Exponential Backoff
 If a transaction fails due to issues like RPC errors, nonce gaps, or mempool reorgs, the relayer currently just logs the error and moves on.
 
 **Solution:**  

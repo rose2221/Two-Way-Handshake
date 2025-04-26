@@ -10,7 +10,7 @@ interface IContractB {
 
 contract ContractA is Ownable{
 
-    event Syn    (uint256 indexed sessionId, address indexed initiator);
+event Syn    (uint256 indexed sessionId, address indexed initiator);
     event SynAck (uint256 indexed sessionId);
 
     error InvalidState();
@@ -19,14 +19,14 @@ contract ContractA is Ownable{
 
     enum Status { None, SynSent, AckReceived, Complete }
 
-    struct Session {
+      struct Session {
         Status  status;
         address initiator;  
     }
 
     mapping(uint256 => Session) public sessions;  
     address public immutable counterparty;        
-    address public relayer;                  
+address public relayer;                  
 
 
     constructor(address _counterparty, address _relayer)  Ownable(msg.sender){
@@ -45,31 +45,20 @@ contract ContractA is Ownable{
         _;
     }
 
-    function initiateHandshake(uint256 sessionId)
-        external
-       
-    {
+    function initiateHandshake(uint256 sessionId) external{
         if (sessions[sessionId].status != Status.None) revert SessionExists();
-
         sessions[sessionId] = Session({
             status:    Status.SynSent,
             initiator: msg.sender
         });
-
-        emit Syn(sessionId, msg.sender);
+emit Syn(sessionId, msg.sender);
 
     }
 
-    function acknowledge(uint256 sessionId)
-        external
-     
-        onlyRelayer
-    {
+    function acknowledge(uint256 sessionId) external onlyRelayer {
         Session storage s = sessions[sessionId];
         if (s.status != Status.SynSent) revert InvalidState();
-
         s.status = Status.Complete; 
-
         emit SynAck(sessionId);
     }
 

@@ -42,11 +42,7 @@ contract ContractB is Ownable {
         _;
     }
 
-    function acknowledge(uint256 sessionId)
-        external
-       
-        onlyRelayer
-    {
+    function acknowledge(uint256 sessionId) external onlyRelayer {
         Session storage s = sessions[sessionId];
         if (s.status != Status.None) revert InvalidState();
 
@@ -55,11 +51,7 @@ contract ContractB is Ownable {
     }
 
  
-    function confirm(uint256 sessionId)
-        external
-       
-        onlyRelayer
-    {
+    function confirm(uint256 sessionId) external onlyRelayer {
         Session storage s = sessions[sessionId];
         if (s.status != Status.AckSent) revert InvalidState();
 
