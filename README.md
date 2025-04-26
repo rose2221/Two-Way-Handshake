@@ -4,6 +4,14 @@
 This project demonstrates a two-way cross-chain handshake between two smart contracts deployed on different networks.  
 A relayer service listens for events and sends transactions across chains to complete the handshake.
 
+
+
+---
+
+### video demo
+
+- [![Watch the video](https://i.sstatic.net/Vp2cE.png)](https://youtu.be/gBrSXO2yGiU?si=LbUnRXXQL2A-7c4b)
+
 ---
 
 ### Deployed contracts
@@ -27,11 +35,7 @@ A relayer service listens for events and sends transactions across chains to com
 
 ---
 
-### video demo
 
-- [click here to watch the successful handshake demo](link-to-your-video)
-
----
 
 ### How to run the relayer
 
@@ -74,10 +78,6 @@ cast send $CONTRACT_A_ADDR "initiateHandshake(uint256)" $SESSION \
 
 this will emit a `syn` event, and the relayer will automatically complete the handshake across the two networks.
 
----
-Of course! Here's your content cleaned up, **humanized**, and **formatted nicely** for the README (without extending it, just polishing it):
-
----
 
 ## Future Enhancements
 
