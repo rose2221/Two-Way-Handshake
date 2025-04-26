@@ -1,12 +1,12 @@
-```markdown
-# cross-chain handshake demo
 
-this project demonstrates a two-way cross-chain handshake between two smart contracts deployed on different networks.  
-a relayer service listens for events and sends transactions across chains to complete the handshake.
+# Cross-chain Handshake 
+
+This project demonstrates a two-way cross-chain handshake between two smart contracts deployed on different networks.  
+A relayer service listens for events and sends transactions across chains to complete the handshake.
 
 ---
 
-### deployed contracts
+### Deployed contracts
 
 - contract a (sepolia): [`0xddA72c449E9e8Cf5b440859c6AA78d8E1803FAc3`](https://sepolia.etherscan.io/address/0xddA72c449E9e8Cf5b440859c6AA78d8E1803FAc3)
 - contract b (arbitrum sepolia): [`0x8c7A0E5A49f6f4ca7AA8EE10933Ab5E7bCE85FeF`](https://sepolia.arbiscan.io/address/0x8c7A0E5A49f6f4ca7AA8EE10933Ab5E7bCE85FeF)
@@ -20,7 +20,7 @@ a relayer service listens for events and sends transactions across chains to com
 
 ---
 
-### handshake initiation transaction
+### Handshake initiation transaction
 
 - initiated from contract a with session id `785`
 - transaction hash: [`0x8c3025777753e38b5073e4e69097c32639588d4b91965e1c4a87856bba8d5cbd`](https://sepolia.etherscan.io/tx/0x8c3025777753e38b5073e4e69097c32639588d4b91965e1c4a87856bba8d5cbd)
@@ -33,9 +33,9 @@ a relayer service listens for events and sends transactions across chains to com
 
 ---
 
-### how to run the relayer
+### How to run the relayer
 
-1. fill the `.env` file with the following variables:
+1. fill the `.env` file presnt in `./go-relayer` directory with the following variables:
 
 ```env
 SEPOLIA_RPC=https://eth-sepolia.g.alchemy.com/v2/cuJGeZ26qywahhkli6epc2XqIOoZJhFF
@@ -54,7 +54,7 @@ go build ./cmd/relayer
 ./relayer
 ```
 
----
+
 
 ### how to initiate handshake manually
 
@@ -65,7 +65,7 @@ any user with a funded sepolia wallet can initiate a handshake by calling `initi
 export CONTRACT_A_ADDR=0xddA72c449E9e8Cf5b440859c6AA78d8E1803FAc3
 export SEPOLIA_RPC=https://eth-sepolia.g.alchemy.com/v2/cuJGeZ26qywahhkli6epc2XqIOoZJhFF
 export YOUR_PRIVATE_KEY=your_private_key_here
-export SESSION=785
+export SESSION=
 
 cast send $CONTRACT_A_ADDR "initiateHandshake(uint256)" $SESSION \
     --rpc-url $SEPOLIA_RPC \
@@ -75,7 +75,6 @@ cast send $CONTRACT_A_ADDR "initiateHandshake(uint256)" $SESSION \
 this will emit a `syn` event, and the relayer will automatically complete the handshake across the two networks.
 
 ---
-```
 
 
 
