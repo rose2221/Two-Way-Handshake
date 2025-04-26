@@ -5,54 +5,55 @@ import (
 	"log"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	contracts "github.com/you/handshake-relayer/contracts"
-	"../internal/eth"
-	"github.com/you/handshake-relayer/internal/persistence"
+	contracts "github.com/rose2221/Two-Way-Handshake/go-relayer/internal/contracts"
+	// "github.com/rose2221/Two-Way-Handshake/go-relayer/internal/eth"
+	// "github.com/rose2221/Two-Way-Handshake/go-relayer/internal/persistence"
 )
 
 type Loop struct {
 	ctx        context.Context
 	cancel     context.CancelFunc
-	db         *persistence.LevelDB
-	a, b       *contracts.ContractA      // bindings *on their native chains*
-	authA, authB *bind.TransactOpts
+	// db         *persistence.LevelDB
+	a          *contracts.ContractA    
+	b          *contracts.ContractB      
+	auth_a, auth_b *bind.TransactOpts
 }
 
 func NewLoop(
 	ctx context.Context,
-	db *persistence.LevelDB,
+	// db *persistence.LevelDB,
 	a *contracts.ContractA, b *contracts.ContractB,
-	authA, authB *bind.TransactOpts,
+	auth_a, auth_b *bind.TransactOpts,
 ) *Loop {
-	c, cancel := context.WithCancel(ctx)
-	return &Loop{ctx:c, cancel:cancel, db:db, a:a, b:b, authA:authA, authB:authB}
+	con, cancel := context.WithCancel(ctx)
+	return &Loop{ctx:con, cancel:cancel, /*db:db, */ a:a, b:b, auth_a:auth_a, auth_b:auth_b}
 }
 
 func (l *Loop) Start() {
-	go l.watchSyn()
-	go l.watchAck()
-	go l.watchSynAck()
+	go l.see_Syn()
+	go l.see_Ack()
+	go l.see_SynAck()
 	<-l.ctx.Done()
 }
 
-/*────────── event → tx pipelines ─────────*/
 
-func (l *Loop) watchSyn() {
-	sink := make(chan *contracts.ContractASyn)
-	sub, err := l.a.WatchSyn(&bind.WatchOpts{Context:l.ctx}, sink, nil)
-	if err != nil { log.Fatalf("watch syn: %v", err) }
-	log.Println("Listening for Syn…")
+func (l *Loop) see_Syn() {
+	sink1 := make(chan *contracts.ContractASyn)
+	
+	sub1, err := l.a.WatchSyn(&bind.WatchOpts{Context:l.ctx}, sink1, nil, nil)
+	if err != nil { log.Fatalf("watching syn- %v", err) }
+	log.Println("listening for Syn....")
 
 	for {
 		select {
-		case ev := <-sink:
-			log.Printf("[Syn] session=%d ↦ ACK on B", ev.SessionId)
-			tx, err := l.b.Acknowledge(l.authB, ev.SessionId)
+		case ev := <-sink1:
+			log.Printf("Syn session=%d -> ACK on B", ev.SessionId)
+			txn, err := l.b.Acknowledge(l.auth_a, ev.SessionId)
 			if err != nil {
 				log.Printf("ack tx err: %v", err); continue
 			}
-			log.Printf("…sent tx %s", tx.Hash())
-		case err := <-sub.Err():
+			log.Printf("sent tx %s", txn.Hash())
+		case err := <-sub1.Err():
 			log.Printf("syn sub err: %v", err)
 			return
 		case <-l.ctx.Done():
@@ -61,22 +62,22 @@ func (l *Loop) watchSyn() {
 	}
 }
 
-func (l *Loop) watchAck() {
-	sink := make(chan *contracts.ContractBAck)
-	sub, err := l.b.WatchAck(&bind.WatchOpts{Context:l.ctx}, sink, nil)
-	if err != nil { log.Fatalf("watch ack: %v", err) }
-	log.Println("Listening for Ack…")
+func (l *Loop) see_Ack() {
+	sink2 := make(chan *contracts.ContractBAck)
+	sub2, err := l.b.WatchAck(&bind.WatchOpts{Context:l.ctx}, sink2, nil)
+	if err != nil { log.Fatalf("watching ack: %v", err) }
+	log.Println("listening for Ack…")
 
 	for {
 		select {
-		case ev := <-sink:
-			log.Printf("[Ack] session=%d ↦ SYN-ACK on A", ev.SessionId)
-			tx, err := l.a.Acknowledge(l.authA, ev.SessionId)
-			if err != nil {
+	case ev := <-sink2:
+			log.Printf("Ack session=%d -> SYN-ACK on A", ev.SessionId)
+		txn, err := l.a.Acknowledge(l.auth_b, ev.SessionId)
+			 if err != nil {
 				log.Printf("syn-ack err: %v", err); continue
 			}
-			log.Printf("…sent tx %s", tx.Hash())
-		case err := <-sub.Err():
+			log.Printf("sent tx %s", txn.Hash())
+		case err := <-sub2.Err():
 			log.Printf("ack sub err: %v", err)
 			return
 		case <-l.ctx.Done():
@@ -85,21 +86,21 @@ func (l *Loop) watchAck() {
 	}
 }
 
-func (l *Loop) watchSynAck() {
+func (l *Loop) see_SynAck() {
 	sink := make(chan *contracts.ContractASynAck)
 	sub, err := l.a.WatchSynAck(&bind.WatchOpts{Context:l.ctx}, sink, nil)
 	if err != nil { log.Fatalf("watch synack: %v", err) }
-	log.Println("Listening for SynAck…")
+	log.Println("Listening for SynAck...")
 
 	for {
 		select {
 		case ev := <-sink:
-			log.Printf("[SynAck] session=%d ↦ Confirm on B", ev.SessionId)
-			tx, err := l.b.Confirm(l.authB, ev.SessionId)
+			log.Printf("SynAck session=%d -> Confirm on B", ev.SessionId)
+			txn, err := l.b.Confirm(l.auth_b, ev.SessionId)
 			if err != nil {
 				log.Printf("confirm err: %v", err); continue
 			}
-			log.Printf("…sent tx %s", tx.Hash())
+	log.Printf("sent tx %s", txn.Hash())
 		case err := <-sub.Err():
 			log.Printf("synack sub err: %v", err)
 			return

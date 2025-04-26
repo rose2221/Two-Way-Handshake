@@ -1,4 +1,4 @@
-module go-relayer
+module github.com/rose2221/Two-Way-Handshake/go-relayer
 
 go 1.24.2
 
