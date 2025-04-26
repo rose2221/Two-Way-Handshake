@@ -75,6 +75,35 @@ cast send $CONTRACT_A_ADDR "initiateHandshake(uint256)" $SESSION \
 this will emit a `syn` event, and the relayer will automatically complete the handshake across the two networks.
 
 ---
+Of course! Here's your content cleaned up, **humanized**, and **formatted nicely** for the README (without extending it, just polishing it):
 
+---
 
+## Future Enhancements
 
+### 1. Persistence Layer (Replay Protection)
+Currently, if the relayer restarts, it forgets which sessions it has already handled, which could cause duplicate transactions.
+
+**Solution:**  
+Integrate a simple LevelDB instance to store:
+- Last processed block numbers
+- Session IDs that have already been relayed
+
+---
+
+### 2. Dockerization & CI Pipeline
+Right now, the relayer requires manual environment setup.
+
+**Solution:**  
+- Add a `Dockerfile` and `docker-compose.yaml` to simplify deployment.
+- Add tests to validate the entire relayer flow during CI builds.
+
+---
+
+### 3. Transaction Retry with Exponential Backoff
+If a transaction fails due to issues like RPC errors, nonce gaps, or mempool reorgs, the relayer currently just logs the error and moves on.
+
+**Solution:**  
+Use a retry mechanism such as `go-retry` or implement a simple exponential backoff system to retry failed transactions automatically.
+
+---
