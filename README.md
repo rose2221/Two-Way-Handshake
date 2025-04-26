@@ -10,7 +10,7 @@ A relayer service listens for events and sends transactions across chains to com
 
 ### video demo
 
-- [![Watch the video](https://i.sstatic.net/Vp2cE.png)](https://youtu.be/gBrSXO2yGiU?si=LbUnRXXQL2A-7c4b)
+- [![Watch the video](https://github.com/rose2221/Two-Way-Handshake/blob/main/two-way-handhskae-image.png)](https://youtu.be/gBrSXO2yGiU?si=LbUnRXXQL2A-7c4b)
 
 ---
 
