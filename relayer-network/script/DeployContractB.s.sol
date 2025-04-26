@@ -5,13 +5,7 @@ import "forge-std/Script.sol";
 import "../src/ContractB.sol";
 
 contract DeployB is Script {
-    /**
-     * env vars used
-     *  - PRIVATE_KEY              → EOA that broadcasts the tx
-     *  - RELAYER_ADDR             → hot wallet that does the bridging
-     *  - CONTRACT_A_ADDR          → already-known address of ContractA
-     *                                (or pre-computed CREATE2 address)
-     */
+
     function run() external {
         uint256 pk       = vm.envUint("PRIVATE_KEY2");
         address relayer  = vm.envAddress("RELAYER_ADDR");
@@ -23,6 +17,5 @@ contract DeployB is Script {
 
         vm.stopBroadcast();
 
-        console2.log("ContractB deployed:", address(b));
     }
 }

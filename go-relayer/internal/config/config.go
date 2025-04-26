@@ -17,18 +17,18 @@ type Config struct {
 func Load() Config {
 	_ = godotenv.Load() 
 
+
 get := func(k string) string {
 		v := os.Getenv(k)
 	if v == "" { log.Fatalf("missing env %s", k) }
 		return v
 	}
 
-toI := func(k string) int64 {
-	i, err := strconv.ParseInt(get(k), 10, 64)
-		if err != nil { log.Fatalf("bad int env %s", k) }
-		return i
-	}
-
+	toI := func(k string) int64 {
+		i, err := strconv.ParseInt(get(k), 10, 64)
+			if err != nil { log.Fatalf("bad int env %s", k) }
+			return i
+		}
 return Config{
 		SepoliaWs:  get("SEPOLIA_RPC"),
 		ArbitrumWs:  get("RPC_B"),
